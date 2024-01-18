@@ -17,9 +17,7 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.update();
 
 function init (geometry) { 
-  const material = new THREE.MeshMatcapMaterial({
-    //matcap: new THREE.TextureLoader().load('./assets/textures/matcaps/black-n-shiney.jpg')
-  });
+  const material = new THREE.MeshMatcapMaterial();
   const mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);
 
