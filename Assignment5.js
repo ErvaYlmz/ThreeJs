@@ -61,6 +61,7 @@ function init(geometry) {
   mesh.position.x=dogPositionX;
   mesh.position.z=dogPositionZ;
   mesh.position.y = dogPositionY;
+  updateDog(mesh);
 
   const sunlight = new THREE.DirectionalLight(0xffffff);
   sunlight.position.y = 2;
@@ -91,16 +92,12 @@ function initMovingObject() {
     sphere.position.x -= speed;
 
     // top ekran dışındaysa sil
-    if (sphere.position.x < -10) {
+    if (sphere.position.x < -15) {
       scene.remove(sphere);
     }
 
-    //silincek
-    console.log(dogPositionX);
-    console.log(dogPositionY);
-
     // top köpekle çakışıyorsa topu sil ve puan ekle
-    if(sphere.position.x == dogPositionX && (sphere.position.y <= dogPositionY)){
+    if(Math.abs(sphere.position.x - dogPositionX) < 0.1 && Math.abs(sphere.position.y - dogPositionY) < 0.1){
         scene.remove(sphere);
         point++;
         console.log(point);
@@ -121,18 +118,21 @@ for (i = 1; i < 16; i++) { // 15 tane top 1er saniye aralıklarla geliyor
   setTimeout(initMovingObject, i*1000);
 }
 
-function updateDog(){
-    document.addEventListener("keydown", (event) => {
-        if (event.key === "ArrowUp") {
-          dogPositionY += 0.5;
-        } 
-        else if (event.key === "ArrowDown") {
-          dogPositionY -= 0.5;
-        }
-      });
-}
-// nedense dog hareket etmiyo diye fonksiyonu her fırsatta çağırmaya çalıştım
-updateDog();
+function updateDog(mesh) {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowUp') {
+        console.log("up");
+        mesh.position.y+=0.5;
+        dogPositionY += 0.5;
+        console.log(dogPositionY);
+      } else if (e.key === 'ArrowDown') {
+        console.log("down");
+        mesh.position.y-=0.5;
+        dogPositionY -= 0.5;
+        console.log(dogPositionY);
+      }
+    });
+  }
 
 function animate() {
   requestAnimationFrame(animate);
