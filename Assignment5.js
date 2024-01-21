@@ -40,7 +40,7 @@ document.body.appendChild(renderer.domElement);
 //ground Texture : arka plan fotoğrafı
 
 const groundTexture = new THREE.TextureLoader().load(
-  "./texture-grass-field_1232-251.jpg"
+  "./marble.jpg"
 );
 scene.background = groundTexture;
 
@@ -76,12 +76,14 @@ function init(geometry) {
 
   animate();
 }
+let intervalId = null;
+
 
 function initMovingObject() {
-    // top büyüklüğü
+  // top büyüklüğü
   const radius = 0.2; 
   const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
-  const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 }); // color yerine texture için './top_arkaPlanı.png' koyabilirsin
+  const sphereMaterial = new THREE.MeshBasicMaterial({ map: new THREE.TextureLoader().load('./bubble.png') });
   const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
   scene.add(sphere);
 
@@ -105,10 +107,26 @@ function initMovingObject() {
         scene.remove(sphere);
         console.log("Points:"+point);
     }
+
+    // toplam puan 150'yi geçince top üretimi durdur ve ekrana "Good Job!" yaz
+    if(point > 150){
+        clearInterval(intervalId);
+        document.getElementById('container').innerHTML="Good Job!";
+    }
+
     requestAnimationFrame(animateSphere);
   }
   animateSphere();
 }
+
+// Her 3 saniyede bir top üret
+intervalId = setInterval(initMovingObject, 3000);
+
+// Top üretmeyi durdurmak için bu satırı kullanabilirsiniz:
+// clearInterval(intervalId);
+
+
+
 
 const loader = new OBJLoader();
 loader.load("./dog.obj", (obj) => init(obj.children[0].geometry));
