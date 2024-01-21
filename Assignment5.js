@@ -1,6 +1,6 @@
 // yapmamız gerekenler:
 // 1. kameranın sabit kalmasını sağlamak (yapıldı)
-// 2. köpeği sadece yukarı-aşağı hareket ettirmek (büyük ihtimalle dogUpdate fonksiyonun eventListener kısmında hata var)
+// 2. köpeği sadece yukarı-aşağı hareket ettirmek (yapıldı ????)
 // 3. köpek ve topun üst üste gelince topun yok olmasını sağlamak (initMovingObject fonksiyonunda if condition ekledim ama nedense olmuyo)
 // 4. yakalanan top sayına göre puan eklemek (optional)
 // 5. toplara png eklemek (optional) ve daha iyi bi arka plan fotoğrafı bulunabilir
@@ -19,6 +19,8 @@ const h = window.innerHeight-5;
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, w / h, 0.1, 1000);
 var point=0;
+
+document.getElementById('container').innerHTML="Points: "+point;
 
 const dog= new THREE.Mesh();
 dog.position.x=0;
@@ -58,9 +60,9 @@ function init(geometry) {
   });
   const mesh = new THREE.Mesh(geometry, material);
   scene.add(mesh);
-  mesh.position.x=dogPositionX;
-  mesh.position.z=dogPositionZ;
-  mesh.position.y = dogPositionY;
+  mesh.position.x=-5;
+  mesh.position.z=0;
+  mesh.position.y = 0;
   updateDog(mesh);
 
   const sunlight = new THREE.DirectionalLight(0xffffff);
@@ -97,10 +99,11 @@ function initMovingObject() {
     }
 
     // top köpekle çakışıyorsa topu sil ve puan ekle
-    if(Math.abs(sphere.position.x - dogPositionX) < 0.1 && Math.abs(sphere.position.y - dogPositionY) < 0.1){
-        scene.remove(sphere);
+    if(Math.abs(sphere.position.x - dogPositionX) < 0.7 && Math.abs(sphere.position.y - dogPositionY) < 0.7){
         point++;
-        console.log(point);
+        document.getElementById('container').innerHTML="Points: "+point;
+        scene.remove(sphere);
+        console.log("Points:"+point);
     }
     requestAnimationFrame(animateSphere);
   }
@@ -121,15 +124,11 @@ for (i = 1; i < 16; i++) { // 15 tane top 1er saniye aralıklarla geliyor
 function updateDog(mesh) {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowUp') {
-        console.log("up");
         mesh.position.y+=0.5;
         dogPositionY += 0.5;
-        console.log(dogPositionY);
       } else if (e.key === 'ArrowDown') {
-        console.log("down");
         mesh.position.y-=0.5;
         dogPositionY -= 0.5;
-        console.log(dogPositionY);
       }
     });
   }
@@ -137,7 +136,6 @@ function updateDog(mesh) {
 function animate() {
   requestAnimationFrame(animate);
   renderer.render(scene, camera);
-    updateDog();
 }
 
 function handleWindowResize() {
